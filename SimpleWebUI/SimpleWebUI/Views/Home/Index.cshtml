@@ -1,0 +1,42 @@
+﻿@*
+	For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using SimpleWebUI.Models
+
+<h1>Simple Web UI</h1>
+
+@*<h2>View Model Parameter Data</h2>
+	<ul>
+		<li>@Model[0]</li>
+		<li>@Model[1]</li>
+		<li>@Model[2]</li>
+	</ul>
+
+	<h2>ViewBag Model Data</h2>
+	<p>@ViewBag.Message</p>*@
+
+<h2>ViewData: My Favorite Thinkers</h2>
+<ul>
+	@foreach (var student in ViewData["students"] as IList<Student>)
+	{
+		<li>
+			@student.FirstName @student.LastName
+		</li>
+	}
+</ul>
+
+<h2>ViewBag: My Favorite Quote</h2>
+<p>Quotation: @ViewBag.Quote</p>
+<p>By: @ViewBag.Author</p>
+
+<h2>View Model Parameter: My Favorite Courses</h2>
+<ul>
+	@foreach (var course in @Model as Course[])
+	{
+		<li>
+			@course.Name (@course.CreditHours credit hours)
+		</li>
+	}
+</ul>

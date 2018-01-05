@@ -1,18 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using ContosoUniversity.Data;
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
 
-namespace TodoApi
+namespace ContosoUniversity
 {
     public class Startup
     {
@@ -26,22 +23,33 @@ namespace TodoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-			services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+			services.AddDbContext<SchoolContext>(options =>
+			options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-			app.UseMvc();
-			
-			var logger = loggerFactory
-				.AddDebug(LogLevel.Debug)
-				.CreateLogger(this.GetType().FullName);
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
 
-				logger.LogDebug("-------------------Your log message goes here--------------------");
+            app.UseStaticFiles();
 
-			
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action=Index}/{id?}");
+            });
         }
     }
 }
